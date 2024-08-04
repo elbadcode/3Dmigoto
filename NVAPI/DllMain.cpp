@@ -318,7 +318,7 @@ static bool loadDll()
 	// FIXME: Only load one 3DMigoto DLL
 	LoadLibrary(L"d3d11.dll");
 	LoadLibrary(L"d3d9.dll");
-
+	
 	// We need to load the real version of nvapi, in order to get the addresses
 	// of the original routines.  This will be fixed up in DLLMainHook to give us the
 	// original library, while giving every other caller our library from the game folder.
