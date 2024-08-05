@@ -546,7 +546,7 @@ static DWORD WINAPI crash_handler_switch_to_window(_In_ LPVOID lpParameter)
 	// the debugger, either win+down or alt+space and choose "Restore",
 	// either win+left/right several times to move it to the other monitor
 	// or alt+space again and choose "Move", press any arrow key to start
-	// moving and *then* you can use the mouse to move the window to the
+	// moving and *then* you can use the mouse to move the window to the 
 	// other monitor)... Try to switch to windowed mode to make our lives a
 	// lot easier, but depending on the crash this might just hang (DirectX
 	// might get stuck waiting on a lock or the window message queue might
