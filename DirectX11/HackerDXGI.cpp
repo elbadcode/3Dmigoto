@@ -275,6 +275,16 @@ void HackerSwapChain::RunFrameActions()
 	if (G->gReloadConfigPending)
 		ReloadConfig(mHackerDevice);
 
+	G->countFrames++;
+
+	if (G->gFirstLaunch && G->countFrames != 0 && G->countFrames % 300 == 0) {
+		//LogOverlayW(LOG_INFO, L"%d\n", (GetTickCount() - G->ticks_at_launch));
+		if (GetTickCount() - G->ticks_at_launch >= 30000) {
+			G->gFirstLaunch = false;
+			G->gReloadConfigPending = true;
+		}
+	}
+
 	// Draw the on-screen overlay text with hunting and informational
 	// messages, before final Present. We now do this after the shader and
 	// config reloads, so if they have any notices we will see them this

@@ -404,6 +404,8 @@ struct Globals
 	bool gInitialized;
 	bool bIntendedTargetExe;
 	bool gReloadConfigPending;
+	bool gFirstLaunch;
+	int countFrames;
 	bool gWipeUserConfig;
 	bool gLogInput;
 	bool gShowWarnings;
@@ -696,6 +698,8 @@ struct Globals
 		gInitialized(false),
 		bIntendedTargetExe(false),
 		gReloadConfigPending(false),
+		gFirstLaunch(true),
+		countFrames(0),
 		gWipeUserConfig(false),
 		user_config_dirty(0),
 		gLogInput(false),
