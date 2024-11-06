@@ -277,11 +277,24 @@ void HackerSwapChain::RunFrameActions()
 
 	G->countFrames++;
 
-	if (G->gFirstLaunch && G->countFrames != 0 && G->countFrames % 300 == 0) {
-		//LogOverlayW(LOG_INFO, L"%d\n", (GetTickCount() - G->ticks_at_launch));
-		if (GetTickCount() - G->ticks_at_launch >= 30000) {
-			G->gFirstLaunch = false;
-			G->gReloadConfigPending = true;
+	if (G->gFirstLaunch) {
+		if (G->countFrames != 0 && G->countFrames % 300 == 0) {
+			if (GetTickCount() - G->ticks_at_launch >= 30000) {
+				G->gFirstLaunch = false;
+				G->gReloadConfigPending = true;
+			}
+		}
+	}
+	else {
+		if (G->last_auto_save == 0)
+			G->last_auto_save = GetTickCount();
+
+		else if (G->countFrames != 0 && G->countFrames % 1000 == 0) {
+			if (GetTickCount() - G->last_auto_save >= 300000) {
+				G->last_auto_save = GetTickCount();
+				SavePersistentSettings();
+				LogOverlay(LOG_INFO, "Saved Persistent Variables (Usually used for Toggles)\n");
+			}
 		}
 	}
 

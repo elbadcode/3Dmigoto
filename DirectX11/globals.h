@@ -411,6 +411,7 @@ struct Globals
 	bool gShowWarnings;
 	bool dump_all_profiles;
 	DWORD ticks_at_launch;
+	DWORD last_auto_save;
 
 	wchar_t SHADER_PATH[MAX_PATH];
 	wchar_t SHADER_CACHE_PATH[MAX_PATH];
@@ -721,6 +722,7 @@ struct Globals
 			FILTER_REFRESH[i] = 0;
 
 		ticks_at_launch = GetTickCount();
+		last_auto_save = 0;
 	}
 };
 
