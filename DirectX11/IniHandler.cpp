@@ -4228,6 +4228,18 @@ void LoadConfigFile()
 	// TODO: Enable this by default if wider testing goes well:
 	G->check_foreground_window = GetIniBool(L"System", L"check_foreground_window", false, NULL);
 
+	// Allows to delay initial config reload (any negative number to disables it)
+	G->gConfigInitializationDelay = GetIniInt(L"System", L"config_initialization_delay", 0, NULL);
+	if (G->gConfigInitializationDelay < 0) {
+		G->gConfigInitialized = true;
+	}
+
+	// Allows to change interval between persistent vars autosaving to d3dx_user.ini (any negative number to disables it)
+	G->gSettingsAutoSaveInterval = GetIniInt(L"System", L"settings_auto_save_interval", 60, NULL);
+	if (G->gSettingsAutoSaveInterval < 0) {
+		G->gSettingsAutoSaveInterval = 2147483647;
+	}
+
 	// [Device] (DXGI parameters)
 	LogInfo("[Device]\n");
 	G->SCREEN_WIDTH = GetIniInt(L"Device", L"width", -1, NULL);
@@ -4548,6 +4560,8 @@ void LoadProfileManagerConfig(const wchar_t *config_dir)
 void SavePersistentSettings()
 {
 	FILE *f;
+
+	G->gSettingsSaveTime = G->gTime;
 
 	if (!G->user_config_dirty)
 		return;

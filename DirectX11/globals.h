@@ -404,14 +404,14 @@ struct Globals
 	bool gInitialized;
 	bool bIntendedTargetExe;
 	bool gReloadConfigPending;
-	bool gFirstLaunch;
-	int countFrames;
+	bool gConfigInitialized;
 	bool gWipeUserConfig;
 	bool gLogInput;
 	bool gShowWarnings;
 	bool dump_all_profiles;
+	float gTime;
+	float gSettingsSaveTime;
 	DWORD ticks_at_launch;
-	DWORD last_auto_save;
 
 	wchar_t SHADER_PATH[MAX_PATH];
 	wchar_t SHADER_CACHE_PATH[MAX_PATH];
@@ -506,6 +506,8 @@ struct Globals
 	bool hide_cursor;
 	bool cursor_upscaling_bypass;
 	bool check_foreground_window;
+	int gSettingsAutoSaveInterval;
+	int gConfigInitializationDelay;
 
 	CRITICAL_SECTION mCriticalSection;
 
@@ -699,13 +701,15 @@ struct Globals
 		gInitialized(false),
 		bIntendedTargetExe(false),
 		gReloadConfigPending(false),
-		gFirstLaunch(true),
-		countFrames(0),
+		gConfigInitialized(false),
 		gWipeUserConfig(false),
 		user_config_dirty(0),
 		gLogInput(false),
 		gShowWarnings(true),
-		dump_all_profiles(false)
+		gSettingsAutoSaveInterval(0),
+		gConfigInitializationDelay(0),
+		dump_all_profiles(false),
+		gTime(0)
 	{
 		int i;
 
@@ -722,7 +726,6 @@ struct Globals
 			FILTER_REFRESH[i] = 0;
 
 		ticks_at_launch = GetTickCount();
-		last_auto_save = 0;
 	}
 };
 

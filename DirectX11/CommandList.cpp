@@ -206,7 +206,7 @@ void RunCommandList(HackerDevice *mHackerDevice,
 		resource = (ID3D11Resource**)call_info->indirect_buffer;
 
 	RunCommandListComplete(mHackerDevice, mHackerContext, command_list,
-			call_info, resource, NULL, post);
+		call_info, resource, NULL, post);
 }
 
 void RunResourceCommandList(HackerDevice *mHackerDevice,
@@ -3126,7 +3126,7 @@ float CommandListOperand::evaluate(CommandListState *state, HackerDevice *device
 		case ParamOverrideType::RES_HEIGHT:
 			return (float)G->mResolutionInfo.height;
 		case ParamOverrideType::TIME:
-			return (float)(GetTickCount() - G->ticks_at_launch) / 1000.0f;
+			return (float)G->gTime;
 		case ParamOverrideType::RAW_SEPARATION:
 			// We could use cached values of these (nvapi is known
 			// to become a bottleneck with too many calls / frame),

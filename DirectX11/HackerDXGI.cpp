@@ -232,6 +232,8 @@ void HackerSwapChain::RunFrameActions()
 	// so that the most lost will be one frame worth.  Tradeoff of performance to accuracy
 	if (LogFile) fflush(LogFile);
 
+	G->gTime = (GetTickCount() - G->ticks_at_launch) / 1000.0f;
+
 	// Run the command list here, before drawing the overlay so that a
 	// custom shader on the present call won't remove the overlay. Also,
 	// run this before most frame actions so that this can be considered as
@@ -275,26 +277,20 @@ void HackerSwapChain::RunFrameActions()
 	if (G->gReloadConfigPending)
 		ReloadConfig(mHackerDevice);
 
-	G->countFrames++;
-
-	if (G->gFirstLaunch) {
-		if (G->countFrames != 0 && G->countFrames % 300 == 0) {
-			if (GetTickCount() - G->ticks_at_launch >= 30000) {
-				G->gFirstLaunch = false;
-				G->gReloadConfigPending = true;
-			}
+	// Regular LoadConfigFile() on startup fails to properly load all resources in some edge cases 
+	// So, as bandaid solution, it has some sense to force ReloadConfig() after DLL is fully initialized
+	// This way resources will be loaded properly before modded object appear on screen and cause crash
+	if (G->gConfigInitialized) {
+		// Autosave persistent variables every gSettingsAutoSaveInterval seconds
+		if (G->gTime - G->gSettingsSaveTime > G->gSettingsAutoSaveInterval) {
+			SavePersistentSettings();
+			LogOverlay(LOG_INFO, "Saved Persistent Variables\n");
 		}
 	}
 	else {
-		if (G->last_auto_save == 0)
-			G->last_auto_save = GetTickCount();
-
-		else if (G->countFrames != 0 && G->countFrames % 1000 == 0) {
-			if (GetTickCount() - G->last_auto_save >= 300000) {
-				G->last_auto_save = GetTickCount();
-				SavePersistentSettings();
-				LogOverlay(LOG_INFO, "Saved Persistent Variables (Usually used for Toggles)\n");
-			}
+		if (G->gTime > G->gConfigInitializationDelay) {
+			G->gConfigInitialized = true;
+			ReloadConfig(mHackerDevice);
 		}
 	}
 
