@@ -275,6 +275,29 @@ void HackerSwapChain::RunFrameActions()
 	if (G->gReloadConfigPending)
 		ReloadConfig(mHackerDevice);
 
+	G->countFrames++;
+
+	if (G->gFirstLaunch) {
+		if (G->countFrames != 0 && G->countFrames % 300 == 0) {
+			if (GetTickCount() - G->ticks_at_launch >= 30000) {
+				G->gFirstLaunch = false;
+				G->gReloadConfigPending = true;
+			}
+		}
+	}
+	else {
+		if (G->last_auto_save == 0)
+			G->last_auto_save = GetTickCount();
+
+		else if (G->countFrames != 0 && G->countFrames % 1000 == 0) {
+			if (GetTickCount() - G->last_auto_save >= 300000) {
+				G->last_auto_save = GetTickCount();
+				SavePersistentSettings();
+				LogOverlay(LOG_INFO, "Saved Persistent Variables (Usually used for Toggles)\n");
+			}
+		}
+	}
+
 	// Draw the on-screen overlay text with hunting and informational
 	// messages, before final Present. We now do this after the shader and
 	// config reloads, so if they have any notices we will see them this

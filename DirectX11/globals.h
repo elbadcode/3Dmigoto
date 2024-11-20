@@ -404,11 +404,14 @@ struct Globals
 	bool gInitialized;
 	bool bIntendedTargetExe;
 	bool gReloadConfigPending;
+	bool gFirstLaunch;
+	int countFrames;
 	bool gWipeUserConfig;
 	bool gLogInput;
 	bool gShowWarnings;
 	bool dump_all_profiles;
 	DWORD ticks_at_launch;
+	DWORD last_auto_save;
 
 	wchar_t SHADER_PATH[MAX_PATH];
 	wchar_t SHADER_CACHE_PATH[MAX_PATH];
@@ -696,6 +699,8 @@ struct Globals
 		gInitialized(false),
 		bIntendedTargetExe(false),
 		gReloadConfigPending(false),
+		gFirstLaunch(true),
+		countFrames(0),
 		gWipeUserConfig(false),
 		user_config_dirty(0),
 		gLogInput(false),
@@ -717,6 +722,7 @@ struct Globals
 			FILTER_REFRESH[i] = 0;
 
 		ticks_at_launch = GetTickCount();
+		last_auto_save = 0;
 	}
 };
 
