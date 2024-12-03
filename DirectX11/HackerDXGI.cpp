@@ -255,7 +255,7 @@ void HackerSwapChain::RunFrameActions()
 			G->analyse_frame = false;
 			if (G->DumpUsage)
 				DumpUsage(G->ANALYSIS_PATH);
-			LogOverlay(LOG_INFO, "Frame analysis saved to %S\n", G->ANALYSIS_PATH);
+			LogOverlayW(LOG_INFO, L"Frame analysis saved to %S\n", G->ANALYSIS_PATH);
 		}
 	}
 
