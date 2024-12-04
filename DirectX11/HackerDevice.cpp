@@ -2035,7 +2035,7 @@ static void override_resource_desc(D3D11_BUFFER_DESC *desc, TextureOverride *tex
 		if (textureOverride->override_byte_stride <= 0) {
 			textureOverride->override_byte_stride = desc->StructureByteStride;
 			if (textureOverride->override_byte_stride == 0) {
-				LogOverlayW(LOG_DIRE, L"%s:\nFailed to detect stride for override_vertex_count=%d, please set override_byte_stride!\n", textureOverride->ini_section.c_str(), textureOverride->override_vertex_count);
+				LogOverlayW(LOG_DIRE, L"Failed to detect stride for override_vertex_count=%d, please set override_byte_stride!\n - [%ls]\n", textureOverride->override_vertex_count, textureOverride->ini_section.c_str());
 				return;
 			}
 		}

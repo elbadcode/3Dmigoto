@@ -381,7 +381,7 @@ bool declare_local_variable(const wchar_t* section, wstring& name,
 	CommandListVariable* var = NULL;
 
 	if (!valid_variable_name(name)) {
-		LogOverlayW(LOG_WARNING, L"Illegal local variable name:  \"%S\"\n - [%S]\n", name.c_str(), section);
+		LogOverlayW(LOG_WARNING, L"Illegal local variable name:  \"%ls\"\n - [%ls]\n", name.c_str(), section);
 		return false;
 	}
 
@@ -391,7 +391,7 @@ bool declare_local_variable(const wchar_t* section, wstring& name,
 		// independent scopes (if {local $tmp} else {local $tmp}), but
 		// we won't allow masking a local variable from a parent scope,
 		// because that's usually a bug. Choose a different name son.
-		LogOverlayW(LOG_WARNING, L"Illegal redeclaration of local variable \"%S\"\n - [%S]\n", name.c_str(), section);
+		LogOverlayW(LOG_WARNING, L"Illegal redeclaration of local variable \"%ls\"\n - [%ls]\n", name.c_str(), section);
 		return false;
 	}
 
@@ -399,7 +399,7 @@ bool declare_local_variable(const wchar_t* section, wstring& name,
 		// Not making this fatal since this could clash between say a
 		// global in the d3dx.ini and a local variable in another ini.
 		// Just issue a notice in hunting mode and carry on.
-		LogOverlayW(LOG_NOTICE, L"Local \"%S\" masks a global variable with the same name\n - [%S]\n", name.c_str(), section);
+		LogOverlayW(LOG_NOTICE, L"Local \"%ls\" masks a global variable with the same name\n - [%ls]\n", name.c_str(), section);
 	}
 
 	pre_command_list->static_vars.emplace_front(name, 0.0f, VariableFlags::NONE);
@@ -2099,7 +2099,7 @@ bool CustomShader::compile(char type, wchar_t *filename, const wstring *wname, c
 
 	f = CreateFile(wpath, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (f == INVALID_HANDLE_VALUE) {
-		LogOverlayW(LOG_WARNING, L"Shader not found: %S\n", wpath);
+		LogOverlayW(LOG_WARNING, L"Shader not found: %ls\n", wpath);
 		goto err;
 	}
 
@@ -2158,7 +2158,7 @@ bool CustomShader::compile(char type, wchar_t *filename, const wstring *wname, c
 	}
 
 	if (FAILED(hr)) {
-		LogOverlayW(LOG_WARNING, L"Error compiling custom shader %S\n", wpath);
+		LogOverlayW(LOG_WARNING, L"Error compiling custom shader %ls\n", wpath);
 		goto err;
 	}
 
@@ -4532,19 +4532,19 @@ void CustomResource::LoadBufferFromFile(ID3D11Device *mOrigDevice1)
 
 	f = CreateFile(filename.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (f == INVALID_HANDLE_VALUE) {
-		LogOverlayW(LOG_WARNING, L"Failed to load custom buffer resource %S: %d\n", filename.c_str(), GetLastError());
+		LogOverlayW(LOG_WARNING, L"Failed to load custom buffer resource %ls: %d\n", filename.c_str(), GetLastError());
 		return;
 	}
 
 	size = GetFileSize(f, 0);
 	buf = malloc(size); // malloc to allow realloc to resize it if the user overrode the size
 	if (!buf) {
-		LogOverlayW(LOG_DIRE, L"Out of memory loading %S\n", filename.c_str());
+		LogOverlayW(LOG_DIRE, L"Out of memory loading %ls\n", filename.c_str());
 		goto out_close;
 	}
 
 	if (!ReadFile(f, buf, size, &read_size, 0) || size != read_size) {
-		LogOverlayW(LOG_WARNING, L"Error reading custom buffer from file %S\n", filename.c_str());
+		LogOverlayW(LOG_WARNING, L"Error reading custom buffer from file %ls\n", filename.c_str());
 		goto out_delete;
 	}
 
@@ -4611,7 +4611,7 @@ void CustomResource::LoadFromFile(ID3D11Device *mOrigDevice1)
 		// TODO:
 		// format = ...
 	} else
-		LogOverlayW(LOG_WARNING, L"Failed to load custom texture resource %S: 0x%x\n", filename.c_str(), hr);
+		LogOverlayW(LOG_WARNING, L"Failed to load custom texture resource %ls: 0x%x\n", filename.c_str(), hr);
 }
 
 void CustomResource::SubstantiateBuffer(ID3D11Device *mOrigDevice1, void **buf, DWORD size)
@@ -4677,7 +4677,7 @@ void CustomResource::SubstantiateBuffer(ID3D11Device *mOrigDevice1, void **buf, 
 		is_null = false;
 		OverrideOutOfBandInfo(&format, &stride);
 	} else {
-		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %S [%S]: 0x%x\n",
+		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %ls [%ls]: 0x%x\n",
 				lookup_enum_name(CustomResourceTypeNames, override_type), name.c_str(), hr);
 		LogResourceDesc(&desc);
 	}
@@ -4703,7 +4703,7 @@ void CustomResource::SubstantiateTexture1D(ID3D11Device *mOrigDevice1)
 		device = mOrigDevice1;
 		is_null = false;
 	} else {
-		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %S [%S]: 0x%x\n",
+		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %ls [%ls]: 0x%x\n",
 				lookup_enum_name(CustomResourceTypeNames, override_type), name.c_str(), hr);
 		LogResourceDesc(&desc);
 	}
@@ -4729,7 +4729,7 @@ void CustomResource::SubstantiateTexture2D(ID3D11Device *mOrigDevice1)
 		device = mOrigDevice1;
 		is_null = false;
 	} else {
-		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %S [%S]: 0x%x\n",
+		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %ls [%ls]: 0x%x\n",
 				lookup_enum_name(CustomResourceTypeNames, override_type), name.c_str(), hr);
 		LogResourceDesc(&desc);
 	}
@@ -4755,7 +4755,7 @@ void CustomResource::SubstantiateTexture3D(ID3D11Device *mOrigDevice1)
 		device = mOrigDevice1;
 		is_null = false;
 	} else {
-		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %S [%S]: 0x%x\n",
+		LogOverlayW(LOG_NOTICE, L"Failed to substantiate custom %ls [%ls]: 0x%x\n",
 				lookup_enum_name(CustomResourceTypeNames, override_type), name.c_str(), hr);
 		LogResourceDesc(&desc);
 	}
@@ -5016,7 +5016,7 @@ static ID3D11Resource * inter_device_resource_transfer(ID3D11Device *dst_dev, ID
 				goto err;
 			}
 			if (is_dsv_format(tex1d_desc.Format) > 0) {
-				LogOverlayW(LOG_NOTICE, L"Inter-device transfer of [%S] with depth/stencil format %s may or may not work. Please report success/failure.\n",
+				LogOverlayW(LOG_NOTICE, L"Inter-device transfer of [%ls] with depth/stencil format %S may or may not work. Please report success/failure.\n",
 						name->c_str(), TexFormatStr(tex1d_desc.Format));
 			}
 
@@ -5080,7 +5080,7 @@ static ID3D11Resource * inter_device_resource_transfer(ID3D11Device *dst_dev, ID
 				goto err;
 			}
 			if (is_dsv_format(tex2d_desc.Format) > 0) {
-				LogOverlayW(LOG_NOTICE, L"Inter-device transfer of [%S] with depth/stencil format %s may or may not work. Please report success/failure.\n",
+				LogOverlayW(LOG_NOTICE, L"Inter-device transfer of [%ls] with depth/stencil format %S may or may not work. Please report success/failure.\n",
 						name->c_str(), TexFormatStr(tex2d_desc.Format));
 			}
 
@@ -5722,7 +5722,7 @@ bool IfCommand::noop(bool post, bool ignore_cto_pre, bool ignore_cto_post)
 	bool is_static;
 
 	if ((post && !post_finalised) || (!post && !pre_finalised)) {
-		LogOverlayW(LOG_WARNING, L"Statement \"if\" missing \"endif\":\n - \"%S\"\n", ini_line.c_str());
+		LogOverlayW(LOG_WARNING, L"Statement \"if\" missing \"endif\":\n - \"%ls\"\n", ini_line.c_str());
 		return true;
 	}
 
@@ -5749,7 +5749,7 @@ void CommandPlaceholder::run(CommandListState*)
 
 bool CommandPlaceholder::noop(bool post, bool ignore_cto_pre, bool ignore_cto_post)
 {
-	LogOverlayW(LOG_WARNING, L"Command not terminated\n - [%S]\n", ini_line.c_str());
+	LogOverlayW(LOG_WARNING, L"Command not terminated\n - [%ls]\n", ini_line.c_str());
 	return true;
 }
 

@@ -1045,9 +1045,9 @@ static bool check_shader_file_already_exists(wchar_t *path, bool bin)
 	WarnIfConflictingShaderExists(path);
 
 	if (bin) {
-		LogOverlayW(LOG_NOTICE, L"cached shader found, but lacks a matching .txt file: %S\n", path);
+		LogOverlayW(LOG_NOTICE, L"cached shader found, but lacks a matching .txt file: %ls\n", path);
 	} else {
-		LogOverlayW(LOG_INFO, L"marked shader file already exists: %S\n", path);
+		LogOverlayW(LOG_INFO, L"marked shader file already exists: %ls\n", path);
 		// Touch the file to make it easy to spot in explorer. We only
 		// do this for .txt files so as not to risk making a stale .bin
 		// file appear valid. This no longer requires modifying the
@@ -1325,7 +1325,7 @@ static void _AnalyseFrameStop()
 			DumpUsage(G->ANALYSIS_PATH);
 		LeaveCriticalSection(&G->mCriticalSection);
 	}
-	LogOverlayW(LOG_INFO, L"Frame analysis saved to %S\n", G->ANALYSIS_PATH);
+	LogOverlayW(LOG_INFO, L"Frame analysis saved to %ls\n", G->ANALYSIS_PATH);
 }
 
 static void AnalyseFrame(HackerDevice *device, void *private_data)
