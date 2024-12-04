@@ -385,9 +385,10 @@ STDMETHODIMP HackerSwapChain::QueryInterface(THIS_
 	}
 	if (riid == __uuidof(IDXGISwapChain3))
 	{
-		LogInfo("***  returns E_NOINTERFACE as error for IDXGISwapChain3.\n");
-		*ppvObject = NULL;
-		return E_NOINTERFACE;
+		// Return interface without wrapper to support HDR color space setup.
+		LogInfo("  return IDXGISwapChain3 interface (%p) without wrapper.\n", ppvObject);
+		LogInfo("  returns result = %x for %p\n", hr, ppvObject);
+		return hr;
 	}
 	if (riid == __uuidof(IDXGISwapChain4))
 	{
