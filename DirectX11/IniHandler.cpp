@@ -4592,7 +4592,7 @@ void SavePersistentSettings()
 	      "[Constants]\n", f);
 
 	for (auto global : persistent_variables)
-		fprintf_s(f, "%S = %.9g\n", global->name.c_str(), global->fval);
+		fprintf_s(f, "%ls = %.9g\n", global->name.c_str(), global->fval);
 
 	fclose(f);
 }
