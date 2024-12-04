@@ -4211,7 +4211,18 @@ void LoadConfigFile()
 	G->gShowWarnings = GetIniBool(L"Logging", L"show_warnings", true, NULL);
 
 	// [Include]
-	ParseIncludedIniFiles();
+	// If enabled, prevents loading of includes during initialization
+	G->gSkipEarlyIncludesLoad = GetIniBool(L"System", L"skip_early_includes_load", true, NULL);
+
+	// Allows to delay initial config reload (any negative number disables it)
+	G->gConfigInitializationDelay = GetIniInt(L"System", L"config_initialization_delay", 0, NULL);
+	if (G->gConfigInitializationDelay < 0) {
+		G->gConfigInitialized = true;
+	}
+
+	if (G->gConfigInitialized || !G->gSkipEarlyIncludesLoad) {
+		ParseIncludedIniFiles();
+	}
 
 	// [System]
 	LogInfo("[System]\n");
@@ -4231,12 +4242,6 @@ void LoadConfigFile()
 	G->enable_platform_update = GetIniBool(L"System", L"allow_platform_update", false, NULL);
 	// TODO: Enable this by default if wider testing goes well:
 	G->check_foreground_window = GetIniBool(L"System", L"check_foreground_window", false, NULL);
-
-	// Allows to delay initial config reload (any negative number to disables it)
-	G->gConfigInitializationDelay = GetIniInt(L"System", L"config_initialization_delay", 0, NULL);
-	if (G->gConfigInitializationDelay < 0) {
-		G->gConfigInitialized = true;
-	}
 
 	// Allows to change interval between persistent vars autosaving to d3dx_user.ini (any negative number to disables it)
 	G->gSettingsAutoSaveInterval = GetIniInt(L"System", L"settings_auto_save_interval", 60, NULL);

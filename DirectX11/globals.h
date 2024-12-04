@@ -508,6 +508,7 @@ struct Globals
 	bool check_foreground_window;
 	int gSettingsAutoSaveInterval;
 	int gConfigInitializationDelay;
+	bool gSkipEarlyIncludesLoad;
 
 	CRITICAL_SECTION mCriticalSection;
 
@@ -708,6 +709,7 @@ struct Globals
 		gShowWarnings(true),
 		gSettingsAutoSaveInterval(0),
 		gConfigInitializationDelay(0),
+		gSkipEarlyIncludesLoad(true),
 		dump_all_profiles(false),
 		gTime(0)
 	{
