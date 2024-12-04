@@ -20,6 +20,7 @@
 #include <chrono>
 
 #include "vector"
+#include <locale>
 
 #define INI_FILENAME L"d3dx.ini"
 
@@ -559,7 +560,7 @@ static void ParseIniKeyValLine(wstring *wline, wstring *section,
 	section_vector->emplace_back(key, val, *wline, *ini_namespace);
 }
 
-static void ParseIniStream(istream *stream, const wstring *_ini_namespace)
+static void ParseIniStream(wistream *stream, const wstring *_ini_namespace)
 {
 	string aline;
 	wstring wline, section, ini_path;
@@ -577,13 +578,7 @@ static void ParseIniStream(istream *stream, const wstring *_ini_namespace)
 		ini_namespace = L"";
 	ini_path = ini_namespace;
 
-	while (std::getline(*stream, aline)) {
-		// Convert to wstring for compatibility with GetPrivateProfile*
-		// APIs. If we assume the d3dx.ini is always ASCII we could
-		// drop this, but that would require us to change a great many
-		// types throughout 3DMigoto, so leave that for another day.
-		wline = wstring(aline.begin(), aline.end());
-
+	while (std::getline(*stream, wline)) {
 		// Strip preceding and trailing whitespace:
 		first = wline.find_first_not_of(L" \t");
 		last = wline.find_last_not_of(L" \t");
@@ -628,9 +623,9 @@ static void ParseIniStream(istream *stream, const wstring *_ini_namespace)
 	}
 }
 
-static void ParseIniExcerpt(const char *excerpt)
+static void ParseIniExcerpt(const wchar_t *excerpt)
 {
-	std::istringstream stream(excerpt);
+	std::wistringstream stream(excerpt);
 
 	ParseIniStream(&stream, NULL);
 }
@@ -655,12 +650,12 @@ static void ParseIniExcerpt(const char *excerpt)
 // it, make sure you delay calling it until after the log file has been opened!
 static void ParseNamespacedIniFile(const wchar_t *ini, const wstring *ini_namespace)
 {
-	ifstream f(ini, ios::in, _SH_DENYNO);
+	wifstream f(ini, ios::in, _SH_DENYNO);
 	if (!f) {
 		LogOverlay(LOG_WARNING, "  Error opening %S\n", ini);
 		return;
 	}
-
+	f.imbue(std::locale(f.getloc(), new std::codecvt_utf8<wchar_t, 0x10ffff, std::consume_header>));
 	ParseIniStream(&f, ini_namespace);
 }
 
@@ -673,29 +668,29 @@ static void ParseIniFile(const wchar_t *ini)
 
 static void InsertBuiltInIniSections()
 {
-	static const char text[] =
-		"[BuiltInCustomShaderDisableScissorClipping]\n"
-		"scissor_enable = false\n"
-		"rasterizer_state_merge = true\n"
-		"draw = from_caller\n"
-		"handling = skip\n"
+	static const wchar_t text[] =
+		L"[BuiltInCustomShaderDisableScissorClipping]\n"
+		L"scissor_enable = false\n"
+		L"rasterizer_state_merge = true\n"
+		L"draw = from_caller\n"
+		L"handling = skip\n"
 
-		"[BuiltInCustomShaderEnableScissorClipping]\n"
-		"scissor_enable = true\n"
-		"rasterizer_state_merge = true\n"
-		"draw = from_caller\n"
-		"handling = skip\n"
+		L"[BuiltInCustomShaderEnableScissorClipping]\n"
+		L"scissor_enable = true\n"
+		L"rasterizer_state_merge = true\n"
+		L"draw = from_caller\n"
+		L"handling = skip\n"
 
-		"[BuiltInCommandListUnbindAllRenderTargets]\n"
-		"o0 = null\n"
-		"o1 = null\n"
-		"o2 = null\n"
-		"o3 = null\n"
-		"o4 = null\n"
-		"o5 = null\n"
-		"o6 = null\n"
-		"o7 = null\n"
-		"oD = null\n"
+		L"[BuiltInCommandListUnbindAllRenderTargets]\n"
+		L"o0 = null\n"
+		L"o1 = null\n"
+		L"o2 = null\n"
+		L"o3 = null\n"
+		L"o4 = null\n"
+		L"o5 = null\n"
+		L"o6 = null\n"
+		L"o7 = null\n"
+		L"oD = null\n"
 	;
 
 	ParseIniExcerpt(text);
