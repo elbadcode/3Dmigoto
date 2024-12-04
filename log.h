@@ -31,6 +31,8 @@ extern bool gLogDebug;
 	do { if (gLogDebug) vLogInfo(fmt, va_args); } while (0)
 #define LogDebugW(fmt, ...) \
 	do { if (gLogDebug) LogInfoW(fmt, __VA_ARGS__); } while (0)
+#define vLogDebugW(fmt, va_args) \
+	do { if (gLogDebug) vLogInfoW(fmt, va_args); } while (0)
 
 // Aliases for the above functions that we use to denote that omitting the
 // newline was done intentionally. For now this is just for our reference, but

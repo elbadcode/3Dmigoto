@@ -222,7 +222,9 @@ public:
 
 	// public to allow CommandList access
 	void FrameAnalysisLog(char *fmt, ...) override;
+	void FrameAnalysisLogW(wchar_t* fmt, ...);
 	void vFrameAnalysisLog(char *fmt, va_list ap);
+	void vFrameAnalysisLogW(wchar_t* fmt, va_list ap);
 	// An alias for the above function that we use to denote that omitting
 	// the newline was done intentionally. For now this is just for our
 	// reference, but later we might actually make the default function
