@@ -3368,6 +3368,8 @@ static void tokenise(const wstring *expression, CommandListSyntaxTree *tree, con
 	shared_ptr<CommandListOperand> operand;
 	wstring token;
 	size_t pos = 0;
+	size_t start_pos = 0;
+	size_t end_pos = 0;
 	int ipos = 0;
 	size_t friendly_pos = 0;
 	float fval;
@@ -3445,7 +3447,21 @@ next_token:
 		//   to have spaces or other unusual characters while freeing
 		//   up . \ and $ for potential use as operators in the future.
 		if (remain[0] < '0' || remain[0] > '9') {
-			pos = remain.find_first_not_of(L"abcdefghijklmnopqrstuvwxyz_0123456789$\\.");
+			// To support UTF-8 namespaces, we'll have to match a string with any characters between two `\`
+			// So we must match the first token from `$\utf8name\var`, `Resource\utf8name\Test = null` or even `$var && $\utf8name\test` 
+			//
+			// Match token substring before namespace (i.e. `$` or `Resource`) or entire token without namespace (i.e. `$var`)
+			pos = remain.find_first_not_of(L"abcdefghijklmnopqrstuvwxyz_0123456789$.");
+			// Check if next char after match is namespace opening backslash
+			if (remain[pos] == L'\\') {
+				// Find tokens separation char to prevent namespace search overflow to next namespaced token
+				end_pos = remain.find_first_of(L"=&|+-/*><%!", pos + 1);
+				// Find namespace closing backslash aka first backlash starting from the end of string
+				start_pos = remain.rfind(L'\\', end_pos) + 1;
+				// Find the token boundary aka match remaining name (i.e. `var` or `Test`)
+				pos = remain.find_first_not_of(L"abcdefghijklmnopqrstuvwxyz_0123456789.", start_pos);
+			}
+
 			if (pos) {
 				token = remain.substr(0, pos);
 				operand = make_shared<CommandListOperand>(friendly_pos, token);
