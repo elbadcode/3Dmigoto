@@ -57,34 +57,35 @@ CRITICAL_SECTION resource_creation_mode_lock;
 // device/context or intercepting the swap chain.
 static bool verify_intended_target_late()
 {
-	wchar_t exe_path[MAX_PATH];
-	wchar_t target[MAX_PATH];
-	size_t target_len, exe_len;
+	// wchar_t exe_path[MAX_PATH];
+	// wchar_t target[MAX_PATH];
+	// size_t target_len, exe_len;
 
-	if (!GetIniBool(L"Loader", L"check_target_even_without_loader", false, NULL))
-		return true;
+	// if (!GetIniBool(L"Loader", L"check_target_even_without_loader", false, NULL))
+	// 	return true;
 
-	if (GetIniString(L"Loader", L"Target", NULL, target, MAX_PATH) == 0)
-		return true;
+	// if (GetIniString(L"Loader", L"Target", NULL, target, MAX_PATH) == 0)
+	// 	return true;
 
-	if (!GetModuleFileName(NULL, exe_path, MAX_PATH))
-		return false;
+	// if (!GetModuleFileName(NULL, exe_path, MAX_PATH))
+	// 	return false;
 
-	// If we are loading into an application with a generic name like
-	// "game.exe" we may want to check part of the directory structure as well,
-	// so we will do the comparison using the end of the full executable path.
-	target_len = wcslen(target);
-	exe_len = wcslen(exe_path);
-	if (exe_len < target_len)
-		return false;
+	// // If we are loading into an application with a generic name like
+	// // "game.exe" we may want to check part of the directory structure as well,
+	// // so we will do the comparison using the end of the full executable path.
+	// target_len = wcslen(target);
+	// exe_len = wcslen(exe_path);
+	// if (exe_len < target_len)
+	// 	return false;
 
-	// Unless we are matching a full path we do expect the match be immediately
-	// following a directory separator, even if this was not explicitly stated
-	// in the target string:
-	if (target[0] != L'\\' && exe_len > target_len && exe_path[exe_len - target_len - 1] != L'\\')
-		return false;
+	// // Unless we are matching a full path we do expect the match be immediately
+	// // following a directory separator, even if this was not explicitly stated
+	// // in the target string:
+	// if (target[0] != L'\\' && exe_len > target_len && exe_path[exe_len - target_len - 1] != L'\\')
+	// 	return false;
 
-	return !_wcsicmp(exe_path + exe_len - target_len, target);
+	// return !_wcsicmp(exe_path + exe_len - target_len, target);
+	return true;
 }
 
 // During the initialize, we will also Log every setting that is enabled, so that the log
